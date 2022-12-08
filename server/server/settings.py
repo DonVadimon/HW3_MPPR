@@ -55,7 +55,11 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-DEBUG = True
+STATICFILES_DIRS = [
+    BASE_DIR / 'server' / 'static',
+]
+
+DEBUG = False
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -63,7 +67,6 @@ DEBUG = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(os.path.dirname(
-    os.path.dirname(os.path.abspath(__file__))), 'media')
+MEDIA_ROOT = BASE_DIR / 'media'
 
 ALLOWED_HOSTS = ['*']

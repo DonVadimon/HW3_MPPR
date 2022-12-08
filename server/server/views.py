@@ -23,9 +23,10 @@ def predictImage(request):
     fs = FileSystemStorage()
 
     filePathName = fs.save('images/'+fileObj.name, fileObj)
-    filePathName = fs.path(filePathName)
+
     modelName = request.POST.get('modelName')
-    scorePrediction, img_uri = predictImageData(modelName, filePathName)
+    scorePrediction, img_uri = predictImageData(
+        modelName, fs.path(filePathName))
     context = {'scorePrediction': scorePrediction,
                'filePathName': filePathName, 'img_uri': img_uri}
     return render(request, 'scorepage.html', context)
@@ -47,7 +48,7 @@ def predictImageData(modelName, filePath):
     input_batch = input_tensor.unsqueeze(0)
     # <-Здесь требуется указать свой путь к модели
     sess = onnxruntime.InferenceSession(
-        '/Users/vadim/Downloads/HW3_MPPR_Maxim/server/media/models/cifar100_CNN_RESNET20.onnx')
+        '/Users/vadim/Downloads/HW3_MPPR/server/media/models/cifar100_CNN_RESNET20.onnx')
     outputOFModel = np.argmax(sess.run(None, {'input': to_numpy(input_batch)}))
     score = imageClassList[outputOFModel]
     return score, img_uri
@@ -67,3 +68,7 @@ def to_data_uri(pil_img):
     pil_img.save(data, "JPEG")  # pick your format
     data64 = base64.b64encode(data.getvalue())
     return u'data:img/jpeg;base64,' + data64.decode('utf-8')
+
+
+def handler500(request):
+    return render(request, '500.html', status=500)
